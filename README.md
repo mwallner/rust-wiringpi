@@ -41,7 +41,6 @@ environment. Feel free to send adaptations for other platforms and
 environments.
 
 Follow [this guide](https://github.com/npryce/rusty-pi/blob/master/doc/compile-the-compiler.asciidoc)
-
 to compile Rust and the standard libraries. This will take a while, so go grab
 something to eat or take a walk in the meantime. We'll assume that Rust is
 located in `~/pi-rust` and that the Raspberry Pi toolkit is located in
