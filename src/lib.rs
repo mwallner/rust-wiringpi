@@ -135,6 +135,7 @@ a non-root program then nothing happens.
 pub mod pin {
     use bindings;
     use libc;
+    use self::Value::{Low, High};
 
     impl_pins!(WiringPi, Gpio, Sys)
     require_root!(WiringPi: 1, Gpio: 18)
