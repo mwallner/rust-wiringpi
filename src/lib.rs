@@ -181,7 +181,7 @@ pub mod pin {
             InputPin(pin, PhantomData)
         }
 
-        #[inline(allways)]
+        #[inline]
         pub fn number(&self) -> libc::c_int {
             let &InputPin(number, _) = self;
             number
@@ -240,7 +240,7 @@ or `Up` (pull to 3.3v)
             OutputPin(pin, PhantomData)
         }
 
-        #[inline(allways)]
+        #[inline]
         pub fn number(&self) -> libc::c_int {
             let &OutputPin(number, _) = self;
             number
@@ -278,7 +278,7 @@ or `Up` (pull to 3.3v)
             PwmPin(pin, PhantomData)
         }
 
-        #[inline(allways)]
+        #[inline]
         pub fn number(&self) -> libc::c_int {
             let &PwmPin(number, _) = self;
             number
