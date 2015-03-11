@@ -3,4 +3,4 @@
 name = "wiringpi"
 version = "0.0.0"
 authors = ["Erik Hedvall <hello@erikhedvall.nu>"]
-build = "make -e"
+build = "build.rs"

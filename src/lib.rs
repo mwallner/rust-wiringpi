@@ -1,31 +1,34 @@
-#![feature(macro_rules)]
+#![feature(libc, std_misc, core)]
 
 extern crate libc;
 
+use std::marker::PhantomData;
+
 use pin::{Pin, RequiresRoot};
 
-macro_rules! impl_pins(
+macro_rules! impl_pins {
     ($($name:ident),+) => (
         $(
+            #[derive(Copy)]
             pub struct $name;
 
             impl Pin for $name {}
         )+
     )
-)
+}
 
-macro_rules! require_root(
+macro_rules! require_root {
     ($($name:ident: $pwm:expr),+) => (
         $(
             impl RequiresRoot for $name {
-                #[inline(allways)]
+                #[inline]
                 fn pwm_pin() -> PwmPin<$name> {
                     PwmPin::new($pwm)
                 }
             }
         )+
     )
-)
+}
 
 mod bindings;
 
@@ -64,7 +67,7 @@ maximum delay is an unsigned 32-bit integer microseconds or approximately 71
 minutes.
 
 */
-    pub fn delay_microseconds(microseconds: uint) {
+    pub fn delay_microseconds(microseconds: usize) {
         unsafe {
             bindings::delayMicroseconds(microseconds as libc::c_uint);
         }
@@ -79,9 +82,9 @@ It returns an unsigned 32-bit number which wraps after 49 days.
 
 */
 
-    pub fn millis() -> uint {
+    pub fn millis() -> usize {
         unsafe {
-            bindings::millis() as uint
+            bindings::millis() as usize
         }
     }
 
@@ -94,9 +97,9 @@ It returns an unsigned 32-bit number which wraps after 71 minutes.
 
 */
 
-    pub fn micros() -> uint {
+    pub fn micros() -> usize {
         unsafe {
-            bindings::micros() as uint
+            bindings::micros() as usize
         }
     }
 }
@@ -137,32 +140,37 @@ pub mod pin {
     use libc;
     use self::Value::{Low, High};
 
-    impl_pins!(WiringPi, Gpio, Sys)
-    require_root!(WiringPi: 1, Gpio: 18)
+    use std::marker::{MarkerTrait, PhantomData};
 
-    pub trait Pin {}
+    impl_pins!(WiringPi, Gpio, Sys);
+    require_root!(WiringPi: 1, Gpio: 18);
+
+    pub trait Pin: MarkerTrait {}
 
     pub trait RequiresRoot: Pin {
         fn pwm_pin() -> PwmPin<Self>;
     }
 
+    #[derive(Copy)]
     pub enum Value {
         Low = 0,
         High
     }
 
+    #[derive(Copy)]
     pub enum Pull {
         Off = 0,
         Down,
         Up
     }
 
+    #[derive(Copy)]
     pub enum PwmMode {
         MarkSpace = 0,
         Balanced
     }
 
-    pub struct InputPin<Pin>(libc::c_int);
+    pub struct InputPin<Pin>(libc::c_int, PhantomData<Pin>);
 
     impl<P: Pin> InputPin<P> {
         pub fn new(pin: libc::c_int) -> InputPin<P> {
@@ -170,17 +178,17 @@ pub mod pin {
                 bindings::pinMode(pin, 0);
             }
 
-            InputPin(pin)
+            InputPin(pin, PhantomData)
         }
 
         #[inline(allways)]
         pub fn number(&self) -> libc::c_int {
-            let &InputPin(number) = self;
+            let &InputPin(number, _) = self;
             number
         }
 
         pub fn into_output(self) -> OutputPin<P> {
-            let InputPin(number) = self;
+            let InputPin(number, _) = self;
             OutputPin::new(number)
         }
 
@@ -202,7 +210,7 @@ pub mod pin {
 
     impl<P: Pin + RequiresRoot> InputPin<P> {
         pub fn into_pwm(self) -> PwmPin<P> {
-            let InputPin(number) = self;
+            let InputPin(number, _) = self;
             PwmPin::new(number)
         }
 /**
@@ -221,7 +229,7 @@ or `Up` (pull to 3.3v)
         }
     }
 
-    pub struct OutputPin<Pin>(libc::c_int);
+    pub struct OutputPin<Pin>(libc::c_int, PhantomData<Pin>);
 
     impl<P: Pin> OutputPin<P> {
         pub fn new(pin: libc::c_int) -> OutputPin<P> {
@@ -229,17 +237,17 @@ or `Up` (pull to 3.3v)
                 bindings::pinMode(pin, 1);
             }
 
-            OutputPin(pin)
+            OutputPin(pin, PhantomData)
         }
 
         #[inline(allways)]
         pub fn number(&self) -> libc::c_int {
-            let &OutputPin(number) = self;
+            let &OutputPin(number, _) = self;
             number
         }
 
         pub fn into_input(self) -> InputPin<P> {
-            let OutputPin(number) = self;
+            let OutputPin(number, _) = self;
             InputPin::new(number)
         }
 
@@ -253,13 +261,13 @@ or `Up` (pull to 3.3v)
 
     impl<P: Pin + RequiresRoot> OutputPin<P> {
         pub fn into_pwm(self) -> PwmPin<P> {
-            let OutputPin(number) = self;
+            let OutputPin(number, _) = self;
             PwmPin::new(number)
         }
     }
 
     ///To understand more about the PWM system, you’ll need to read the Broadcom ARM peripherals manual.
-    pub struct PwmPin<Pin>(libc::c_int);
+    pub struct PwmPin<Pin>(libc::c_int, PhantomData<Pin>);
 
     impl<P: Pin + RequiresRoot> PwmPin<P> {
         pub fn new(pin: libc::c_int) -> PwmPin<P> {
@@ -267,29 +275,29 @@ or `Up` (pull to 3.3v)
                 bindings::pinMode(pin, 2);
             }
 
-            PwmPin(pin)
+            PwmPin(pin, PhantomData)
         }
 
         #[inline(allways)]
         pub fn number(&self) -> libc::c_int {
-            let &PwmPin(number) = self;
+            let &PwmPin(number, _) = self;
             number
         }
 
         pub fn into_input(self) -> InputPin<P> {
-            let PwmPin(number) = self;
+            let PwmPin(number, _) = self;
             InputPin::new(number)
         }
 
         pub fn into_output(self) -> OutputPin<P> {
-            let PwmPin(number) = self;
+            let PwmPin(number, _) = self;
             OutputPin::new(number)
         }
 
         ///Writes the value to the PWM register for the given pin.
         ///
         ///The value must be between 0 and 1024.
-        pub fn write(&self, value: uint) {
+        pub fn write(&self, value: usize) {
             unsafe {
                 bindings::pwmWrite(self.number(), value as libc::c_int);
             }
@@ -311,14 +319,14 @@ The mark:space mode is traditional, however the default mode in the Pi is
         }
 
         ///This sets the range register in the PWM generator. The default is 1024.
-        pub fn set_range(&self, value: uint) {
+        pub fn set_range(&self, value: usize) {
             unsafe {
                 bindings::pwmSetRange(value as libc::c_uint);
             }
         }
 
         ///This sets the divisor for the PWM clock.
-        pub fn set_clock(&self, value: uint) {
+        pub fn set_clock(&self, value: usize) {
             unsafe {
                 bindings::pwmSetClock(value as libc::c_int);
             }
@@ -342,7 +350,7 @@ This function needs to be called with root privileges.
 pub fn setup() -> Option<WiringPi<pin::WiringPi>> {
     unsafe {
         if bindings::wiringPiSetup() >= 0 {
-            Some(WiringPi)
+            Some(WiringPi(PhantomData))
         } else {
             None
         }
@@ -360,7 +368,7 @@ This function needs to be called with root privileges.
 pub fn setup_gpio() -> Option<WiringPi<pin::Gpio>> {
     unsafe {
         if bindings::wiringPiSetupGpio() >= 0 {
-            Some(WiringPi)
+            Some(WiringPi(PhantomData))
         } else {
             None
         }
@@ -388,7 +396,7 @@ not currently possible to action unless called with root privileges.
 pub fn setup_sys() -> Option<WiringPi<pin::Sys>> {
     unsafe {
         if bindings::wiringPiSetupSys() >= 0 {
-            Some(WiringPi)
+            Some(WiringPi(PhantomData))
         } else {
             None
         }
@@ -404,30 +412,30 @@ function when moving from board revision 1 to 2, so if you are using BCM_GPIO
 pin numbers, then you need to be aware of the differences.
 
 */
-pub fn board_revision() -> uint {
+pub fn board_revision() -> usize {
     unsafe {
-        bindings::piBoardRev() as uint
+        bindings::piBoardRev() as usize
     }
 }
 
 ///This returns the BCM_GPIO pin number of the supplied **wiringPi** pin.
 ///
 ///It takes the board revision into account.
-pub fn to_gpio_number(wpi_number: uint) -> uint {
+pub fn to_gpio_number(wpi_number: usize) -> usize {
     unsafe {
-        bindings::wpiPinToGpio(wpi_number as libc::c_int) as uint
+        bindings::wpiPinToGpio(wpi_number as libc::c_int) as usize
     }
 }
 
-pub struct WiringPi<Pin>;
+pub struct WiringPi<Pin>(PhantomData<Pin>);
 
 impl<P: Pin> WiringPi<P> {
-    pub fn input_pin(&self, pin: uint) -> pin::InputPin<P> {
+    pub fn input_pin(&self, pin: usize) -> pin::InputPin<P> {
         let pin = pin as libc::c_int;
         pin::InputPin::new(pin)
     }
 
-    pub fn output_pin(&self, pin: uint) -> pin::OutputPin<P> {
+    pub fn output_pin(&self, pin: usize) -> pin::OutputPin<P> {
         let pin = pin as libc::c_int;
         pin::OutputPin::new(pin)
     }
