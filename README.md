@@ -6,6 +6,21 @@ type system convenience.
 
 [Online documentation](http://ogeon.github.io/docs/rust-wiringpi/master/wiringpi/index.html)
 
+Add the following lines to your `Cargo.io` to use `rust-wiringpi`:
+
+```
+[dependencies]
+wiringpi = "0.1"
+```
+
+or add these lines to opt in to Rust-nightly features:
+
+```
+[dependencies.wiringpi]
+verson = "0.1"
+features = ["nightly"]
+```
+
 ##Example: Flashing Light
 
 ```Rust
@@ -26,11 +41,11 @@ fn main() {
     loop {
     	//Set pin 0 to high and wait one second
         pin.digital_write(High);
-        delay(Duration::seconds(1));
+        delay(1000);
 
     	//Set pin 0 to low and wait one second
         pin.digital_write(Low);
-        delay(Duration::seconds(1));
+        delay(1000);
     }
 }
 
