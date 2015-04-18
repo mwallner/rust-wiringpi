@@ -1,4 +1,4 @@
-#![feature(libc, std_misc, core)]
+#![feature(libc, std_misc)]
 
 extern crate libc;
 
@@ -140,12 +140,12 @@ pub mod pin {
     use libc;
     use self::Value::{Low, High};
 
-    use std::marker::{MarkerTrait, PhantomData};
+    use std::marker::PhantomData;
 
     impl_pins!(WiringPi, Gpio, Sys);
     require_root!(WiringPi: 1, Gpio: 18);
 
-    pub trait Pin: MarkerTrait {}
+    pub trait Pin {}
 
     pub trait RequiresRoot: Pin {
         fn pwm_pin() -> PwmPin<Self>;
