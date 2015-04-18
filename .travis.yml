@@ -1,0 +1,6 @@
+language: rust
+os:
+  - linux
+script:
+  - cargo doc
+after_success: curl https://raw.githubusercontent.com/ogeon/travis-doc-upload/master/travis-doc-upload.sh | sh
