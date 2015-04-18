@@ -13,7 +13,12 @@ keywords = ["wiringpi", "wiring", "raspberry", "pi", "bindings"]
 license = "MIT"
 
 [features]
+#Opt in to Rust-nightly features
 nightly = []
+
+#Don't build wiringPi C library.
+#Useful when building documentation
+noclib = []
 
 [dependencies]
 libc = "0.1"
