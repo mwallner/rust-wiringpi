@@ -4,3 +4,6 @@ name = "wiringpi"
 version = "0.0.0"
 authors = ["Erik Hedvall <hello@erikhedvall.nu>"]
 build = "build.rs"
+
+[dependencies]
+libc = "0.1"
