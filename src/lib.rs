@@ -90,36 +90,6 @@ minutes.
             bindings::delayMicroseconds(microseconds as libc::c_uint);
         }
     }
-
-/**
-
-This returns a number representing the number if milliseconds since your
-program called one of the setup functions.
-
-It returns an unsigned 32-bit number which wraps after 49 days.
-
-*/
-
-    pub fn millis() -> usize {
-        unsafe {
-            bindings::millis() as usize
-        }
-    }
-
-/**
-
-This returns a number representing the number if microseconds since your
-program called one of the setup functions.
-
-It returns an unsigned 32-bit number which wraps after 71 minutes.
-
-*/
-
-    pub fn micros() -> usize {
-        unsafe {
-            bindings::micros() as usize
-        }
-    }
 }
 
 pub mod thread {
@@ -456,6 +426,35 @@ impl<P: Pin> WiringPi<P> {
     pub fn output_pin(&self, pin: usize) -> pin::OutputPin<P> {
         let pin = pin as libc::c_int;
         pin::OutputPin::new(pin)
+    }
+/**
+
+This returns a number representing the number if milliseconds since your
+program called one of the setup functions.
+
+It returns an unsigned 32-bit number which wraps after 49 days.
+
+*/
+
+    pub fn millis(&self) -> usize {
+        unsafe {
+            bindings::millis() as usize
+        }
+    }
+
+/**
+
+This returns a number representing the number if microseconds since your
+program called one of the setup functions.
+
+It returns an unsigned 32-bit number which wraps after 71 minutes.
+
+*/
+
+    pub fn micros(&self) -> usize {
+        unsafe {
+            bindings::micros() as usize
+        }
     }
 }
 
