@@ -1,4 +1,4 @@
-#![feature(std_misc)]
+#![cfg_attr(feature="nightly", feature(std_misc))]
 
 extern crate libc;
 
@@ -35,6 +35,7 @@ mod bindings;
 pub mod time {
     use libc;
     use bindings;
+    #[cfg(feature="nightly")]
     use std::time::Duration;
 
 /**
@@ -46,6 +47,7 @@ Due to the multi-tasking nature of Linux it could be longer. Note that the
 maximum delay is an unsigned 32-bit integer or approximately 49 days.
 
 */
+    #[cfg(feature="nightly")]
     pub fn delay(duration: Duration) {
         let duration = duration.num_milliseconds();
         if duration <= 0 {
@@ -54,6 +56,22 @@ maximum delay is an unsigned 32-bit integer or approximately 49 days.
 
         unsafe {
             bindings::delay(duration as libc::c_uint);
+        }
+    }
+
+/**
+
+This causes program execution to pause for at least the provided number of
+milliseconds.
+
+Due to the multi-tasking nature of Linux it could be longer. Note that the
+maximum delay is an unsigned 32-bit integer or approximately 49 days.
+
+*/
+    #[cfg(not(feature="nightly"))]
+    pub fn delay(duration: u32) {
+        unsafe {
+            bindings::delay(duration);
         }
     }
 

@@ -5,5 +5,8 @@ version = "0.0.0"
 authors = ["Erik Hedvall <hello@erikhedvall.nu>"]
 build = "build.rs"
 
+[features]
+nightly = []
+
 [dependencies]
 libc = "0.1"
