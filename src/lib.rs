@@ -1,4 +1,5 @@
 #![cfg_attr(feature="nightly", feature(std_misc))]
+#![doc(html_root_url = "http://ogeon.github.io/docs/rust-wiringpi/master/")]
 
 extern crate libc;
 

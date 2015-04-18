@@ -4,6 +4,8 @@ An API wrapper for [WiringPi](http://wiringpi.com/) to make it accessible
 using Rust. It implements the most important functions and provides a bit of
 type system convenience.
 
+[Online documentation](http://ogeon.github.io/docs/rust-wiringpi/master/wiringpi/index.html)
+
 ##Example: Flashing Light
 
 ```Rust
