@@ -26,8 +26,6 @@ features = ["nightly"]
 ```Rust
 extern crate wiringpi;
 
-use std::time::Duration;
-
 use wiringpi::pin::{High, Low};
 use wiringpi::time::delay;
 
