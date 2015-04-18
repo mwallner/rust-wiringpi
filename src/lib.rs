@@ -33,7 +33,6 @@ macro_rules! require_root {
 mod bindings;
 
 pub mod time {
-    use libc;
     use bindings;
     #[cfg(feature="nightly")]
     use std::time::Duration;
@@ -49,6 +48,8 @@ maximum delay is an unsigned 32-bit integer or approximately 49 days.
 */
     #[cfg(feature="nightly")]
     pub fn delay(duration: Duration) {
+        use libc;
+        
         let duration = duration.num_milliseconds();
         if duration <= 0 {
             return;
@@ -85,9 +86,9 @@ maximum delay is an unsigned 32-bit integer microseconds or approximately 71
 minutes.
 
 */
-    pub fn delay_microseconds(microseconds: usize) {
+    pub fn delay_microseconds(microseconds: u32) {
         unsafe {
-            bindings::delayMicroseconds(microseconds as libc::c_uint);
+            bindings::delayMicroseconds(microseconds);
         }
     }
 }
@@ -285,7 +286,7 @@ or `Up` (pull to 3.3v)
         ///Writes the value to the PWM register for the given pin.
         ///
         ///The value must be between 0 and 1024.
-        pub fn write(&self, value: usize) {
+        pub fn write(&self, value: u16) {
             unsafe {
                 bindings::pwmWrite(self.number(), value as libc::c_int);
             }
@@ -307,14 +308,14 @@ The mark:space mode is traditional, however the default mode in the Pi is
         }
 
         ///This sets the range register in the PWM generator. The default is 1024.
-        pub fn set_range(&self, value: usize) {
+        pub fn set_range(&self, value: u16) {
             unsafe {
                 bindings::pwmSetRange(value as libc::c_uint);
             }
         }
 
         ///This sets the divisor for the PWM clock.
-        pub fn set_clock(&self, value: usize) {
+        pub fn set_clock(&self, value: u16) {
             unsafe {
                 bindings::pwmSetClock(value as libc::c_int);
             }
@@ -400,30 +401,30 @@ function when moving from board revision 1 to 2, so if you are using BCM_GPIO
 pin numbers, then you need to be aware of the differences.
 
 */
-pub fn board_revision() -> usize {
+pub fn board_revision() -> i32 {
     unsafe {
-        bindings::piBoardRev() as usize
+        bindings::piBoardRev()
     }
 }
 
 ///This returns the BCM_GPIO pin number of the supplied **wiringPi** pin.
 ///
 ///It takes the board revision into account.
-pub fn to_gpio_number(wpi_number: usize) -> usize {
+pub fn to_gpio_number(wpi_number: u16) -> u16 {
     unsafe {
-        bindings::wpiPinToGpio(wpi_number as libc::c_int) as usize
+        bindings::wpiPinToGpio(wpi_number as libc::c_int) as u16
     }
 }
 
 pub struct WiringPi<Pin>(PhantomData<Pin>);
 
 impl<P: Pin> WiringPi<P> {
-    pub fn input_pin(&self, pin: usize) -> pin::InputPin<P> {
+    pub fn input_pin(&self, pin: u16) -> pin::InputPin<P> {
         let pin = pin as libc::c_int;
         pin::InputPin::new(pin)
     }
 
-    pub fn output_pin(&self, pin: usize) -> pin::OutputPin<P> {
+    pub fn output_pin(&self, pin: u16) -> pin::OutputPin<P> {
         let pin = pin as libc::c_int;
         pin::OutputPin::new(pin)
     }
@@ -436,9 +437,9 @@ It returns an unsigned 32-bit number which wraps after 49 days.
 
 */
 
-    pub fn millis(&self) -> usize {
+    pub fn millis(&self) -> u32 {
         unsafe {
-            bindings::millis() as usize
+            bindings::millis()
         }
     }
 
@@ -451,9 +452,9 @@ It returns an unsigned 32-bit number which wraps after 71 minutes.
 
 */
 
-    pub fn micros(&self) -> usize {
+    pub fn micros(&self) -> u32 {
         unsafe {
-            bindings::micros() as usize
+            bindings::micros()
         }
     }
 }
