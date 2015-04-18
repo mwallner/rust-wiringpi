@@ -9,7 +9,7 @@ use pin::{Pin, RequiresRoot};
 macro_rules! impl_pins {
     ($($name:ident),+) => (
         $(
-            #[derive(Copy)]
+            #[derive(Clone, Copy)]
             pub struct $name;
 
             impl Pin for $name {}
@@ -151,20 +151,20 @@ pub mod pin {
         fn pwm_pin() -> PwmPin<Self>;
     }
 
-    #[derive(Copy)]
+    #[derive(Clone, Copy)]
     pub enum Value {
         Low = 0,
         High
     }
 
-    #[derive(Copy)]
+    #[derive(Clone, Copy)]
     pub enum Pull {
         Off = 0,
         Down,
         Up
     }
 
-    #[derive(Copy)]
+    #[derive(Clone, Copy)]
     pub enum PwmMode {
         MarkSpace = 0,
         Balanced
