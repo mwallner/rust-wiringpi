@@ -38,15 +38,12 @@ pub mod time {
     #[cfg(feature="nightly")]
     use std::time::Duration;
 
-/**
-
-This causes program execution to pause for at least the provided duration in
-milliseconds.
-
-Due to the multi-tasking nature of Linux it could be longer. Note that the
-maximum delay is an unsigned 32-bit integer or approximately 49 days.
-
-*/
+    ///This causes program execution to pause for at least the provided
+    ///duration in milliseconds.
+    ///
+    ///Due to the multi-tasking nature of Linux it could be longer. Note that
+    ///the maximum delay is an unsigned 32-bit integer or approximately 49
+    ///days.
     #[cfg(feature="nightly")]
     pub fn delay(duration: Duration) {
         use libc;
@@ -61,15 +58,12 @@ maximum delay is an unsigned 32-bit integer or approximately 49 days.
         }
     }
 
-/**
-
-This causes program execution to pause for at least the provided number of
-milliseconds.
-
-Due to the multi-tasking nature of Linux it could be longer. Note that the
-maximum delay is an unsigned 32-bit integer or approximately 49 days.
-
-*/
+    ///This causes program execution to pause for at least the provided number
+    ///of milliseconds.
+    ///
+    ///Due to the multi-tasking nature of Linux it could be longer. Note that
+    ///the maximum delay is an unsigned 32-bit integer or approximately 49
+    ///days.
     #[cfg(not(feature="nightly"))]
     pub fn delay(duration: u32) {
         unsafe {
@@ -77,16 +71,12 @@ maximum delay is an unsigned 32-bit integer or approximately 49 days.
         }
     }
 
-/**
-
-This causes program execution to pause for at least the provided number of
-microseconds.
-
-Due to the multi-tasking nature of Linux it could be longer. Note that the
-maximum delay is an unsigned 32-bit integer microseconds or approximately 71
-minutes.
-
-*/
+    ///This causes program execution to pause for at least the provided number
+    ///of microseconds.
+    ///
+    ///Due to the multi-tasking nature of Linux it could be longer. Note that
+    ///the maximum delay is an unsigned 32-bit integer microseconds or
+    ///approximately 71 minutes.
     pub fn delay_microseconds(microseconds: u32) {
         unsafe {
             bindings::delayMicroseconds(microseconds);
@@ -98,26 +88,23 @@ pub mod thread {
     use bindings;
     use libc;
 
-/**
-
-This attempts to shift your program (or thread in a multi-threaded
-program) to a higher priority and enables a real-time scheduling.
-
-The priority parameter should be from 0 (the default) to 99 (the maximum).
-This won’t make your program go any faster, but it will give it a bigger slice
-of time when other programs are running. The priority parameter works relative
-to others – so you can make one program priority 1 and another priority 2 and
-it will have the same effect as setting one to 10 and the other to 90 (as long
-as no other programs are running with elevated priorities)
-
-The return value is `true` for success and `false` for error. If an error is returned,
-the program should then consult the _errno_ global variable, as per the usual
-conventions.
-
-_Note_: Only programs running as root can change their priority. If called from
-a non-root program then nothing happens.
-
-*/
+    ///This attempts to shift your program (or thread in a multi-threaded
+    ///program) to a higher priority and enables a real-time scheduling.
+    ///
+    ///The priority parameter should be from 0 (the default) to 99 (the
+    ///maximum). This won’t make your program go any faster, but it will give
+    ///it a bigger slice of time when other programs are running. The priority
+    ///parameter works relative to others – so you can make one program
+    ///priority 1 and another priority 2 and it will have the same effect as
+    ///setting one to 10 and the other to 90 (as long as no other programs are
+    ///running with elevated priorities)
+    ///
+    ///The return value is `true` for success and `false` for error. If an
+    ///error is returned, the program should then consult the _errno_ global
+    ///variable, as per the usual conventions.
+    ///
+    ///_Note_: Only programs running as root can change their priority. If
+    ///called from a non-root program then nothing happens.
     pub fn priority(priority: u8) -> bool {
         unsafe {
             bindings::piHiPri(priority as libc::c_int) >= 0
@@ -203,15 +190,12 @@ pub mod pin {
             let InputPin(number, _) = self;
             PwmPin::new(number)
         }
-/**
 
-This sets the pull-up or pull-down resistor mode on the given pin.
-
-Unlike the Arduino, the BCM2835 has both pull-up an down internal resistors.
-The parameter pud should be; `Off`, (no pull up/down), `Down` (pull to ground)
-or `Up` (pull to 3.3v)
-
-*/
+        ///This sets the pull-up or pull-down resistor mode on the given pin.
+        ///
+        ///Unlike the Arduino, the BCM2835 has both pull-up an down internal
+        ///resistors. The parameter pud should be; `Off`, (no pull up/down),
+        ///`Down` (pull to ground) or `Up` (pull to 3.3v)
         pub fn pull_up_dn_control(&self, pud: Pull) {
             unsafe {
                 bindings::pullUpDnControl(self.number(), pud as libc::c_int);
@@ -293,15 +277,11 @@ or `Up` (pull to 3.3v)
             }
         }
 
-/**
-
-The PWM generator can run in 2 modes – "balanced" and "mark:space".
-
-The mark:space mode is traditional, however the default mode in the Pi is
-"balanced". You can switch modes by supplying the parameter: `Balanced` or
-`MarkSpace`.
-
-*/
+        ///The PWM generator can run in 2 modes – "balanced" and "mark:space".
+        ///
+        ///The mark:space mode is traditional, however the default mode in the
+        ///Pi is "balanced". You can switch modes by supplying the parameter:
+        ///`Balanced` or `MarkSpace`.
         pub fn set_mode(&self, mode: PwmMode) {
             unsafe {
                 bindings::pwmSetMode(mode as libc::c_int);
@@ -324,19 +304,15 @@ The mark:space mode is traditional, however the default mode in the Pi is
     }
 }
 
-/**
-
-This initialises the wiringPi system and assumes that the calling program is
-going to be using the **wiringPi** pin numbering scheme.
-
-This is a simplified numbering scheme which provides a mapping from virtual
-pin numbers 0 through 16 to the real underlying Broadcom GPIO pin numbers. See
-the pins page for a table which maps the **wiringPi** pin number to the Broadcom
-GPIO pin number to the physical location on the edge connector.
-
-This function needs to be called with root privileges.
-
-*/
+///This initialises the wiringPi system and assumes that the calling program
+///is going to be using the **wiringPi** pin numbering scheme.
+///
+///This is a simplified numbering scheme which provides a mapping from virtual
+///pin numbers 0 through 16 to the real underlying Broadcom GPIO pin numbers.
+///See the pins page for a table which maps the **wiringPi** pin number to the
+///Broadcom GPIO pin number to the physical location on the edge connector.
+///
+///This function needs to be called with root privileges.
 pub fn setup() -> Option<WiringPi<pin::WiringPi>> {
     unsafe {
         if bindings::wiringPiSetup() >= 0 {
@@ -347,14 +323,10 @@ pub fn setup() -> Option<WiringPi<pin::WiringPi>> {
     }
 }
 
-/**
-
-This is identical `setup()`, however it allows the calling programs to use the
-Broadcom GPIO pin numbers directly with no re-mapping.
-
-This function needs to be called with root privileges.
-
-*/
+///This is identical `setup()`, however it allows the calling programs to use
+///the Broadcom GPIO pin numbers directly with no re-mapping.
+///
+///This function needs to be called with root privileges.
 pub fn setup_gpio() -> Option<WiringPi<pin::Gpio>> {
     unsafe {
         if bindings::wiringPiSetupGpio() >= 0 {
@@ -365,24 +337,21 @@ pub fn setup_gpio() -> Option<WiringPi<pin::Gpio>> {
     }
 }
 
-/**
-
-This initialises the wiringPi system but uses the /sys/class/gpio interface
-rather than accessing the hardware directly.
-
-This can be called as a non-root user provided the GPIO pins have been
-exported before-hand using the gpio program. Pin number in this mode is the
-native Broadcom GPIO numbers.
-
-_Note_: In this mode you can only use the pins which have been exported via the
-/sys/class/gpio interface. You must export these pins before you call your
-program. You can do this in a separate shell-script, or by using the system()
-function from inside your program.
-
-Also note that some functions have no effect when using this mode as they’re
-not currently possible to action unless called with root privileges.
-
-*/
+///This initialises the wiringPi system but uses the /sys/class/gpio interface
+///rather than accessing the hardware directly.
+///
+///This can be called as a non-root user provided the GPIO pins have been
+///exported before-hand using the gpio program. Pin number in this mode is the
+///native Broadcom GPIO numbers.
+///
+///_Note_: In this mode you can only use the pins which have been exported via
+///the /sys/class/gpio interface. You must export these pins before you call
+///your program. You can do this in a separate shell-script, or by using the
+///system() function from inside your program.
+///
+///Also note that some functions have no effect when using this mode as
+///they’re not currently possible to action unless called with root
+///privileges.
 pub fn setup_sys() -> Option<WiringPi<pin::Sys>> {
     unsafe {
         if bindings::wiringPiSetupSys() >= 0 {
@@ -393,15 +362,11 @@ pub fn setup_sys() -> Option<WiringPi<pin::Sys>> {
     }
 }
 
-/**
-
-This returns the board revision of the Raspberry Pi.
-
-It will be either 1 or 2. Some of the BCM_GPIO pins changed number and
-function when moving from board revision 1 to 2, so if you are using BCM_GPIO
-pin numbers, then you need to be aware of the differences.
-
-*/
+///This returns the board revision of the Raspberry Pi.
+///
+///It will be either 1 or 2. Some of the BCM_GPIO pins changed number and
+///function when moving from board revision 1 to 2, so if you are using
+///BCM_GPIO pin numbers, then you need to be aware of the differences.
 pub fn board_revision() -> i32 {
     unsafe {
         bindings::piBoardRev()
@@ -429,29 +394,21 @@ impl<P: Pin> WiringPi<P> {
         let pin = pin as libc::c_int;
         pin::OutputPin::new(pin)
     }
-/**
 
-This returns a number representing the number if milliseconds since your
-program called one of the setup functions.
-
-It returns an unsigned 32-bit number which wraps after 49 days.
-
-*/
-
+    ///This returns a number representing the number if milliseconds since
+    ///your program called one of the setup functions.
+    ///
+    ///It returns an unsigned 32-bit number which wraps after 49 days.
     pub fn millis(&self) -> u32 {
         unsafe {
             bindings::millis()
         }
     }
 
-/**
-
-This returns a number representing the number if microseconds since your
-program called one of the setup functions.
-
-It returns an unsigned 32-bit number which wraps after 71 minutes.
-
-*/
+    ///This returns a number representing the number if microseconds since
+    ///your program called one of the setup functions.
+    ///
+    ///It returns an unsigned 32-bit number which wraps after 71 minutes.
 
     pub fn micros(&self) -> u32 {
         unsafe {
