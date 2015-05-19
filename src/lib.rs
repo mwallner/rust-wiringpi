@@ -5,7 +5,7 @@ extern crate libc;
 
 use std::marker::PhantomData;
 
-use pin::{Pin, RequiresRoot};
+use pin::{Pin, Pwm};
 
 macro_rules! impl_pins {
     ($($name:ident),+) => (
@@ -18,15 +18,23 @@ macro_rules! impl_pins {
     )
 }
 
-macro_rules! require_root {
+macro_rules! impl_pwm {
     ($($name:ident: $pwm:expr),+) => (
         $(
-            impl RequiresRoot for $name {
+            impl Pwm for $name {
                 #[inline]
                 fn pwm_pin() -> PwmPin<$name> {
                     PwmPin::new($pwm)
                 }
             }
+        )+
+    )
+}
+
+macro_rules! require_root {
+    ($($name:ident),+) => (
+        $(
+            impl RequiresRoot for $name {}
         )+
     )
 }
@@ -137,13 +145,16 @@ pub mod pin {
     }
 
     impl_pins!(WiringPi, Gpio, Phys, Sys);
-    require_root!(WiringPi: 1, Gpio: 18, Phys: 12);
+    impl_pwm!(WiringPi: 1, Gpio: 18, Phys: 12);
+    require_root!(WiringPi, Gpio, Phys);
 
     pub trait Pin {}
 
-    pub trait RequiresRoot: Pin {
+    pub trait Pwm: Pin {
         fn pwm_pin() -> PwmPin<Self>;
     }
+
+    pub trait RequiresRoot: Pin {}
 
     #[derive(Clone, Copy)]
     pub enum Value {
@@ -213,11 +224,6 @@ pub mod pin {
     }
 
     impl<P: Pin + RequiresRoot> InputPin<P> {
-        pub fn into_pwm(self) -> PwmPin<P> {
-            let InputPin(number, _) = self;
-            PwmPin::new(number)
-        }
-
         ///This sets the pull-up or pull-down resistor mode on the given pin.
         ///
         ///Unlike the Arduino, the BCM2835 has both pull-up an down internal
@@ -227,6 +233,13 @@ pub mod pin {
             unsafe {
                 bindings::pullUpDnControl(self.number(), pud as libc::c_int);
             }
+        }
+    }
+
+    impl<P: Pin + Pwm> InputPin<P> {
+        pub fn into_pwm(self) -> PwmPin<P> {
+            let InputPin(number, _) = self;
+            PwmPin::new(number)
         }
     }
 
@@ -269,7 +282,7 @@ pub mod pin {
         }
     }
 
-    impl<P: Pin + RequiresRoot> OutputPin<P> {
+    impl<P: Pin + Pwm> OutputPin<P> {
         pub fn into_pwm(self) -> PwmPin<P> {
             let OutputPin(number, _) = self;
             PwmPin::new(number)
@@ -279,7 +292,7 @@ pub mod pin {
     ///To understand more about the PWM system, you’ll need to read the Broadcom ARM peripherals manual.
     pub struct PwmPin<Pin>(libc::c_int, PhantomData<Pin>);
 
-    impl<P: Pin + RequiresRoot> PwmPin<P> {
+    impl<P: Pin + Pwm> PwmPin<P> {
         pub fn new(pin: libc::c_int) -> PwmPin<P> {
             unsafe {
                 bindings::pinMode(pin, 2);
@@ -446,8 +459,8 @@ impl<P: Pin> WiringPi<P> {
     }
 }
 
-impl<P: RequiresRoot + Pin> WiringPi<P> {
+impl<P: Pwm + Pin> WiringPi<P> {
     pub fn pwm_pin(&self) -> pin::PwmPin<P> {
-        RequiresRoot::pwm_pin()
+        Pwm::pwm_pin()
     }
 }
