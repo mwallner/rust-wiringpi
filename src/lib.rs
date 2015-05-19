@@ -411,10 +411,18 @@ impl<P: Pin> WiringPi<P> {
     ///your program called one of the setup functions.
     ///
     ///It returns an unsigned 32-bit number which wraps after 71 minutes.
-
     pub fn micros(&self) -> u32 {
         unsafe {
             bindings::micros()
+        }
+    }
+
+    ///This writes the 8-bit byte supplied to the first 8 GPIO pins. It’s the
+    ///fastest way to set all 8 bits at once to a particular value, although
+    ///it still takes two write operations to the Pi’s GPIO hardware.
+    pub fn digital_write_byte(&self, byte: u8) {
+        unsafe {
+            bindings::digitalWriteByte(byte as libc::c_int);
         }
     }
 }
