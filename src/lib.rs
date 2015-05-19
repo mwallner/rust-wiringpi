@@ -172,11 +172,11 @@ pub mod pin {
 
     pub trait Pin {}
 
-    pub trait Pwm: Pin {
+    pub trait Pwm: RequiresRoot {
         fn pwm_pin() -> PwmPin<Self>;
     }
 
-    pub trait GpioClock: Pin {
+    pub trait GpioClock: RequiresRoot {
         fn clock_pin() -> ClockPin<Self>;
     }
 
@@ -218,11 +218,6 @@ pub mod pin {
             number
         }
 
-        pub fn into_output(self) -> OutputPin<P> {
-            let InputPin(number, _) = self;
-            OutputPin::new(number)
-        }
-
         ///This function returns the value read at the given pin.
         ///
         ///It will be `High` or `Low` (1 or 0) depending on the logic level at the pin.
@@ -260,6 +255,11 @@ pub mod pin {
                 bindings::pullUpDnControl(self.number(), pud as libc::c_int);
             }
         }
+
+        pub fn into_output(self) -> OutputPin<P> {
+            let InputPin(number, _) = self;
+            OutputPin::new(number)
+        }
     }
 
     impl<P: Pin + Pwm> InputPin<P> {
@@ -293,11 +293,6 @@ pub mod pin {
             number
         }
 
-        pub fn into_input(self) -> InputPin<P> {
-            let OutputPin(number, _) = self;
-            InputPin::new(number)
-        }
-
         ///Writes the value `High` or `Low` (1 or 0) to the given pin which must have been previously set as an output.
         pub fn digital_write(&self, value: Value) {
             unsafe {
@@ -312,6 +307,13 @@ pub mod pin {
             unsafe {
                 bindings::analogWrite(self.number(), value as libc::c_int);
             }
+        }
+    }
+
+    impl<P: Pin + RequiresRoot> OutputPin<P> {
+        pub fn into_input(self) -> InputPin<P> {
+            let OutputPin(number, _) = self;
+            InputPin::new(number)
         }
     }
 
