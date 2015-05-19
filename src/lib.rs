@@ -119,6 +119,23 @@ pub mod pin {
 
     use std::marker::PhantomData;
 
+    ///This returns the BCM_GPIO pin number of the supplied **wiringPi** pin.
+    ///
+    ///It takes the board revision into account.
+    pub fn wpi_to_gpio_number(wpi_number: u16) -> u16 {
+        unsafe {
+            bindings::wpiPinToGpio(wpi_number as libc::c_int) as u16
+        }
+    }
+
+    ///This returns the BCM_GPIO pin number of the supplied physical pin on
+    ///the P1 connector.
+    pub fn phys_to_gpio_number(phys_number: u16) -> u16 {
+        unsafe {
+            bindings::physPinToGpio(phys_number as libc::c_int) as u16
+        }
+    }
+
     impl_pins!(WiringPi, Gpio, Phys, Sys);
     require_root!(WiringPi: 1, Gpio: 18, Phys: 12);
 
@@ -364,15 +381,6 @@ pub fn setup_sys() -> WiringPi<pin::Sys> {
 pub fn board_revision() -> i32 {
     unsafe {
         bindings::piBoardRev()
-    }
-}
-
-///This returns the BCM_GPIO pin number of the supplied **wiringPi** pin.
-///
-///It takes the board revision into account.
-pub fn to_gpio_number(wpi_number: u16) -> u16 {
-    unsafe {
-        bindings::wpiPinToGpio(wpi_number as libc::c_int) as u16
     }
 }
 
