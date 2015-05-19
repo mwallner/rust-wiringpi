@@ -119,8 +119,8 @@ pub mod pin {
 
     use std::marker::PhantomData;
 
-    impl_pins!(WiringPi, Gpio, Sys);
-    require_root!(WiringPi: 1, Gpio: 18);
+    impl_pins!(WiringPi, Gpio, Phys, Sys);
+    require_root!(WiringPi: 1, Gpio: 18, Phys: 12);
 
     pub trait Pin {}
 
@@ -313,28 +313,27 @@ pub mod pin {
 ///Broadcom GPIO pin number to the physical location on the edge connector.
 ///
 ///This function needs to be called with root privileges.
-pub fn setup() -> Option<WiringPi<pin::WiringPi>> {
-    unsafe {
-        if bindings::wiringPiSetup() >= 0 {
-            Some(WiringPi(PhantomData))
-        } else {
-            None
-        }
-    }
+pub fn setup() -> WiringPi<pin::WiringPi> {
+    unsafe { bindings::wiringPiSetup(); }
+    WiringPi(PhantomData)
 }
 
-///This is identical `setup()`, however it allows the calling programs to use
-///the Broadcom GPIO pin numbers directly with no re-mapping.
+///This is identical to `setup()`, however it allows the calling programs to
+///use the Broadcom GPIO pin numbers directly with no re-mapping.
 ///
 ///This function needs to be called with root privileges.
-pub fn setup_gpio() -> Option<WiringPi<pin::Gpio>> {
-    unsafe {
-        if bindings::wiringPiSetupGpio() >= 0 {
-            Some(WiringPi(PhantomData))
-        } else {
-            None
-        }
-    }
+pub fn setup_gpio() -> WiringPi<pin::Gpio> {
+    unsafe { bindings::wiringPiSetupGpio(); }
+    WiringPi(PhantomData)
+}
+
+///This is identical to `setup()`, however it allows the calling programs to
+///use the physical pin numbers _on the P1 connector only_.
+///
+///This function needs to be called with root privileges.
+pub fn setup_phys() -> WiringPi<pin::Phys> {
+    unsafe { bindings::wiringPiSetupPhys(); }
+    WiringPi(PhantomData)
 }
 
 ///This initialises the wiringPi system but uses the /sys/class/gpio interface
@@ -352,14 +351,9 @@ pub fn setup_gpio() -> Option<WiringPi<pin::Gpio>> {
 ///Also note that some functions have no effect when using this mode as
 ///they’re not currently possible to action unless called with root
 ///privileges.
-pub fn setup_sys() -> Option<WiringPi<pin::Sys>> {
-    unsafe {
-        if bindings::wiringPiSetupSys() >= 0 {
-            Some(WiringPi(PhantomData))
-        } else {
-            None
-        }
-    }
+pub fn setup_sys() -> WiringPi<pin::Sys> {
+    unsafe { bindings::wiringPiSetupSys(); }
+    WiringPi(PhantomData)
 }
 
 ///This returns the board revision of the Raspberry Pi.

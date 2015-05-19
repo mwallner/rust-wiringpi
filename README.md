@@ -31,7 +31,7 @@ use wiringpi::time::delay;
 
 fn main() {
     //Setup WiringPi with its own pin numbering order
-    let pi = wiringpi::setup().expect("WiringPi setup failed");
+    let pi = wiringpi::setup();
 
     //Use WiringPi pin 0 as output
     let pin = pi.output_pin(0);
