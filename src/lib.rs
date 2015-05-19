@@ -1,4 +1,4 @@
-#![cfg_attr(feature="nightly", feature(std_misc))]
+#![cfg_attr(feature="nightly", feature(duration))]
 #![doc(html_root_url = "http://ogeon.github.io/docs/rust-wiringpi/master/")]
 
 extern crate libc;
@@ -51,7 +51,7 @@ maximum delay is an unsigned 32-bit integer or approximately 49 days.
     pub fn delay(duration: Duration) {
         use libc;
         
-        let duration = duration.num_milliseconds();
+        let duration = (duration.secs() * 1000) as u32 + duration.extra_nanos() / 1_000_000;
         if duration <= 0 {
             return;
         }
