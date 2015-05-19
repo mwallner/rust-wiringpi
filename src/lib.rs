@@ -200,6 +200,16 @@ pub mod pin {
                 High
             }
         }
+
+        ///This returns the value read on the supplied analog input pin. You
+        ///will need to register additional analog modules to enable this
+        ///function for devices such as the Gertboard, quick2Wire analog
+        ///board, etc.
+        pub fn analog_read(&self) -> u16 {
+            unsafe {
+                bindings::analogRead(self.number()) as u16
+            }
+        }
     }
 
     impl<P: Pin + RequiresRoot> InputPin<P> {
@@ -246,6 +256,15 @@ pub mod pin {
         pub fn digital_write(&self, value: Value) {
             unsafe {
                 bindings::digitalWrite(self.number(), value as libc::c_int);
+            }
+        }
+
+        ///This writes the given value to the supplied analog pin. You will
+        ///need to register additional analog modules to enable this function
+        ///for devices such as the Gertboard.
+        pub fn analog_write(&self, value: u16) {
+            unsafe {
+                bindings::analogWrite(self.number(), value as libc::c_int);
             }
         }
     }
