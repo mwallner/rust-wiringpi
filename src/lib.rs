@@ -5,7 +5,7 @@ extern crate libc;
 
 use std::marker::PhantomData;
 
-use pin::{Pin, Pwm};
+use pin::{Pin, Pwm, GpioClock};
 
 macro_rules! impl_pins {
     ($($name:ident),+) => (
@@ -25,6 +25,19 @@ macro_rules! impl_pwm {
                 #[inline]
                 fn pwm_pin() -> PwmPin<$name> {
                     PwmPin::new($pwm)
+                }
+            }
+        )+
+    )
+}
+
+macro_rules! impl_clock {
+    ($($name:ident: $pwm:expr),+) => (
+        $(
+            impl GpioClock for $name {
+                #[inline]
+                fn clock_pin() -> ClockPin<$name> {
+                    ClockPin::new($pwm)
                 }
             }
         )+
@@ -127,6 +140,14 @@ pub mod pin {
 
     use std::marker::PhantomData;
 
+    const INPUT: libc::c_int = 0;
+    const OUTPUT: libc::c_int = 1;
+    const PWM_OUTPUT: libc::c_int = 2;
+    const GPIO_CLOCK: libc::c_int = 3;
+    //const SOFT_PWM_OUTPUT: libc::c_int = 4;
+    //const SOFT_TONE_OUTPUT: libc::c_int = 5;
+    //const PWM_TONE_OUTPUT: libc::c_int = 6;
+
     ///This returns the BCM_GPIO pin number of the supplied **wiringPi** pin.
     ///
     ///It takes the board revision into account.
@@ -146,12 +167,17 @@ pub mod pin {
 
     impl_pins!(WiringPi, Gpio, Phys, Sys);
     impl_pwm!(WiringPi: 1, Gpio: 18, Phys: 12);
+    impl_clock!(WiringPi: 7, Gpio: 4, Phys: 7);
     require_root!(WiringPi, Gpio, Phys);
 
     pub trait Pin {}
 
     pub trait Pwm: Pin {
         fn pwm_pin() -> PwmPin<Self>;
+    }
+
+    pub trait GpioClock: Pin {
+        fn clock_pin() -> ClockPin<Self>;
     }
 
     pub trait RequiresRoot: Pin {}
@@ -180,7 +206,7 @@ pub mod pin {
     impl<P: Pin> InputPin<P> {
         pub fn new(pin: libc::c_int) -> InputPin<P> {
             unsafe {
-                bindings::pinMode(pin, 0);
+                bindings::pinMode(pin, INPUT);
             }
 
             InputPin(pin, PhantomData)
@@ -243,12 +269,19 @@ pub mod pin {
         }
     }
 
+    impl<P: Pin + GpioClock> InputPin<P> {
+        pub fn into_clock(self) -> ClockPin<P> {
+            let InputPin(number, _) = self;
+            ClockPin::new(number)
+        }
+    }
+
     pub struct OutputPin<Pin>(libc::c_int, PhantomData<Pin>);
 
     impl<P: Pin> OutputPin<P> {
         pub fn new(pin: libc::c_int) -> OutputPin<P> {
             unsafe {
-                bindings::pinMode(pin, 1);
+                bindings::pinMode(pin, OUTPUT);
             }
 
             OutputPin(pin, PhantomData)
@@ -289,13 +322,20 @@ pub mod pin {
         }
     }
 
+    impl<P: Pin + GpioClock> OutputPin<P> {
+        pub fn into_clock(self) -> ClockPin<P> {
+            let OutputPin(number, _) = self;
+            ClockPin::new(number)
+        }
+    }
+
     ///To understand more about the PWM system, you’ll need to read the Broadcom ARM peripherals manual.
     pub struct PwmPin<Pin>(libc::c_int, PhantomData<Pin>);
 
     impl<P: Pin + Pwm> PwmPin<P> {
         pub fn new(pin: libc::c_int) -> PwmPin<P> {
             unsafe {
-                bindings::pinMode(pin, 2);
+                bindings::pinMode(pin, PWM_OUTPUT);
             }
 
             PwmPin(pin, PhantomData)
@@ -348,6 +388,41 @@ pub mod pin {
         pub fn set_clock(&self, value: u16) {
             unsafe {
                 bindings::pwmSetClock(value as libc::c_int);
+            }
+        }
+    }
+
+    pub struct ClockPin<Pin>(libc::c_int, PhantomData<Pin>);
+
+    impl<P: Pin + GpioClock> ClockPin<P> {
+        pub fn new(pin: libc::c_int) -> ClockPin<P> {
+            unsafe {
+                bindings::pinMode(pin, GPIO_CLOCK);
+            }
+
+            ClockPin(pin, PhantomData)
+        }
+
+        #[inline]
+        pub fn number(&self) -> libc::c_int {
+            let &ClockPin(number, _) = self;
+            number
+        }
+
+        pub fn into_input(self) -> InputPin<P> {
+            let ClockPin(number, _) = self;
+            InputPin::new(number)
+        }
+
+        pub fn into_output(self) -> OutputPin<P> {
+            let ClockPin(number, _) = self;
+            OutputPin::new(number)
+        }
+
+        ///Set the freuency on a GPIO clock pin.
+        pub fn frequency(&self, freq: u16) {
+            unsafe {
+                bindings::gpioClockSet(self.number(), freq as libc::c_int);
             }
         }
     }
@@ -462,5 +537,11 @@ impl<P: Pin> WiringPi<P> {
 impl<P: Pwm + Pin> WiringPi<P> {
     pub fn pwm_pin(&self) -> pin::PwmPin<P> {
         Pwm::pwm_pin()
+    }
+}
+
+impl<P: GpioClock + Pin> WiringPi<P> {
+    pub fn clock_pin(&self) -> pin::ClockPin<P> {
+        GpioClock::clock_pin()
     }
 }
