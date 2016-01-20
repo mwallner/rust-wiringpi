@@ -1,5 +1,4 @@
 [package]
-
 name = "wiringpi"
 version = "0.1.2"
 authors = ["Erik Hedvall <hello@erikhedvall.nu>"]
@@ -21,4 +20,4 @@ nightly = []
 noclib = []
 
 [dependencies]
-libc = "0.1"
+libc = "0.2"
