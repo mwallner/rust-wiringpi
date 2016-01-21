@@ -68,7 +68,7 @@ pub mod time {
     #[cfg(feature="nightly")]
     pub fn delay(duration: Duration) {
         use libc;
-        
+
         let duration = (duration.secs() * 1000) as u32 + duration.extra_nanos() / 1_000_000;
         if duration <= 0 {
             return;
@@ -182,7 +182,7 @@ pub mod pin {
 
     pub trait RequiresRoot: Pin {}
 
-    #[derive(Clone, Copy)]
+    #[derive(Clone, Copy, PartialEq)]
     pub enum Value {
         Low = 0,
         High
