@@ -172,11 +172,11 @@ pub mod pin {
 
     pub trait Pin {}
 
-    pub trait Pwm: RequiresRoot {
+    pub trait Pwm: RequiresRoot + Sized {
         fn pwm_pin() -> PwmPin<Self>;
     }
 
-    pub trait GpioClock: RequiresRoot {
+    pub trait GpioClock: RequiresRoot + Sized {
         fn clock_pin() -> ClockPin<Self>;
     }
 
