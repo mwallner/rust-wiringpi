@@ -182,7 +182,7 @@ pub mod pin {
 
     pub trait RequiresRoot: Pin {}
 
-    #[derive(Clone, Copy, PartialEq)]
+    #[derive(Clone, Copy, PartialEq, Eq)]
     pub enum Value {
         Low = 0,
         High
