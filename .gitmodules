@@ -1,3 +1,6 @@
 [submodule "wiringPi"]
 	path = wiringPi
 	url = git://git.drogon.net/wiringPi
+[submodule "WiringOP"]
+	path = WiringOP
+	url = https://github.com/zhaolei/WiringOP.git
