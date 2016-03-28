@@ -1,6 +1,26 @@
-language: rust
+language: generic
 os:
   - linux
+install:
+  - export PATH="$PATH:$HOME/multirust/bin"
+  - git clone https://github.com/brson/multirust
+  - pushd multirust
+  - ./build.sh
+  - ./install.sh --prefix=~/multirust
+  - multirust default beta
+  - multirust add-target beta arm-unknown-linux-gnueabihf
+  - rustc -V
+  - cargo -V
+  - popd
+  - mkdir ~/.cargo
+  - cp scripts/config ~/.cargo/config
+  - git clone https://github.com/raspberrypi/tools.git ~/pi-tools
+  - cp scripts/gcc-sysroot ~/pi-tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin
+  - chmod +x ~/pi-tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin/gcc-sysroot
 script:
+  - ./cross64 "build -v"
+  - ./cross64 "build -v --example flashing_lights"
+  - ./cross64 "build -v --features orangepi"
+  - ./cross64 "build -v --features orangepi --example flashing_lights"
   - cargo doc --features noclib
 after_success: curl https://raw.githubusercontent.com/ogeon/travis-doc-upload/master/travis-doc-upload.sh | sh
