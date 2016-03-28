@@ -1,9 +1,9 @@
 [package]
 name = "wiringpi"
-version = "0.1.3"
+version = "0.1.5"
 authors = ["Erik Hedvall <hello@erikhedvall.nu>"]
 build = "build.rs"
-exclude = ["scripts/*", "wiringPi/**/*.o", "wiringPi/examples/**", "examples/*"]
+exclude = ["cross*", "scripts/*", "wiringPi/**/*.o", "wiringPi/examples/**", "wiringPi/pins/**", "WiringOP/**/*.o", "WiringOP/examples/**", "WiringOP/pins/**", "examples/*"]
 description = "An API wrapper for WiringPi, implementing the most important functions and provides a bit of type system convenience. See README.md for Raspberry Pi build instructions."
 documentation = "http://ogeon.github.io/docs/rust-wiringpi/master/wiringpi/index.html"
 repository = "https://github.com/Ogeon/rust-wiringpi"
