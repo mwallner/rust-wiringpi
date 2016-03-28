@@ -12,4 +12,4 @@ wiringop:
 	rm -f $(OUT_DIR)/libwiringpi.a
 	cp WiringOP/wiringPi/libwiringPi.a $(OUT_DIR)/libwiringpi.a
 
-.PHONY: wiringpi
+.PHONY: wiringpi wiringop
