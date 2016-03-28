@@ -54,3 +54,14 @@ This project can be cross compiled using Cargo.
 [Follow these instructions](https://github.com/Ogeon/rust-on-raspberry-pi)
 And use `./cross64 build` or `./cross32 build`, depending on your system,
 to check if everything builds as expected.
+
+##Orange Pi support
+
+`rust-wiringpi` can also wrap the WiringOP library for the Orange Pi SBC boards.
+This can be enabled with the `orangepi` feature:
+
+```
+[dependencies.wiringpi]
+verson = "0.1"
+features = ["orangepi"]
+```
