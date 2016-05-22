@@ -1,26 +1,42 @@
 language: generic
+dist: trusty
 os:
   - linux
+addons:
+  apt:
+    packages:
+      - gcc-arm-linux-gnueabihf
+
+# Build for all chains since Rust 1.8.0 (not available for prior versions)
+env:
+  - RUST=nightly
+  - RUST=beta
+  - RUST=stable
+  - RUST=1.8.0
+
+# Install rust
 install:
-  - export PATH="$PATH:$HOME/multirust/bin"
-  - git clone https://github.com/brson/multirust
-  - pushd multirust
-  - ./build.sh
-  - ./install.sh --prefix=~/multirust
-  - multirust default beta
-  - multirust add-target beta arm-unknown-linux-gnueabihf
+  - curl https://sh.rustup.rs -sSf | sh -s -- -y
+  - export PATH="$HOME/.cargo/bin:$PATH"
+  - rustup toolchain install $RUST
+  - rustup default $RUST
+  - rustup target add arm-unknown-linux-gnueabihf
   - rustc -V
   - cargo -V
-  - popd
-  - mkdir ~/.cargo
   - cp scripts/config ~/.cargo/config
   - git clone https://github.com/raspberrypi/tools.git ~/pi-tools
   - cp scripts/gcc-sysroot ~/pi-tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin
   - chmod +x ~/pi-tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin/gcc-sysroot
+  - export SYSROOT="$HOME/pi-tools/arm-bcm2708/arm-bcm2708hardfp-linux-gnueabi/arm-bcm2708hardfp-linux-gnueabi/sysroot"
+  - export PATH="$HOME/pi-tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin:$PATH"
+  - export CC="$HOME/pi-tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin/gcc-sysroot"
+  - export AR="$HOME/pi-tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin/arm-linux-gnueabihf-ar"
+
 script:
-  - ./cross64 "build -v"
-  - ./cross64 "build -v --example flashing_lights"
-  - ./cross64 "build -v --features orangepi"
-  - ./cross64 "build -v --features orangepi --example flashing_lights"
-  - cargo doc --features noclib
+  - cargo build -v --target=arm-unknown-linux-gnueabihf
+  - cargo build -v --target=arm-unknown-linux-gnueabihf --features orangepi
+  - cargo build -v --target=arm-unknown-linux-gnueabihf --example flashing_lights
+  - cargo build -v --target=arm-unknown-linux-gnueabihf --features orangepi --example flashing_lights
+  - cargo doc -v --target=arm-unknown-linux-gnueabihf --features noclib
+
 after_success: curl https://raw.githubusercontent.com/ogeon/travis-doc-upload/master/travis-doc-upload.sh | sh
