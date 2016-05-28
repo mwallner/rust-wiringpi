@@ -1,7 +1,8 @@
 extern crate wiringpi;
 
 use wiringpi::pin::Value::{High, Low};
-use wiringpi::time::delay;
+use std::time::Duration;
+use std::thread;
 
 fn main() {
     //Setup WiringPi with its own pin numbering order
@@ -13,10 +14,10 @@ fn main() {
     loop {
         //Set pin 0 to high and wait one second
         pin.digital_write(High);
-        delay(1000);
+        thread::sleep(Duration::from_millis(1000));
 
         //Set pin 0 to low and wait one second
         pin.digital_write(Low);
-        delay(1000);
+        thread::sleep(Duration::from_millis(1000));
     }
 }
