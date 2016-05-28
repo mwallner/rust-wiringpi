@@ -53,42 +53,6 @@ macro_rules! require_root {
 
 mod bindings;
 
-pub mod time {
-    use bindings;
-    use std::time::Duration;
-
-    ///This causes program execution to pause for at least the provided
-    ///duration in milliseconds.
-    ///
-    ///Due to the multi-tasking nature of Linux it could be longer. Note that
-    ///the maximum delay is an unsigned 32-bit integer or approximately 49
-    ///days.
-    pub fn delay(duration: Duration) {
-        use libc;
-
-        let duration = (duration.as_secs() * 1000) as u32 + duration.subsec_nanos() / 1_000_000;
-        if duration <= 0 {
-            return;
-        }
-
-        unsafe {
-            bindings::delay(duration as libc::c_uint);
-        }
-    }
-
-    ///This causes program execution to pause for at least the provided number
-    ///of microseconds.
-    ///
-    ///Due to the multi-tasking nature of Linux it could be longer. Note that
-    ///the maximum delay is an unsigned 32-bit integer microseconds or
-    ///approximately 71 minutes.
-    pub fn delay_microseconds(microseconds: u32) {
-        unsafe {
-            bindings::delayMicroseconds(microseconds);
-        }
-    }
-}
-
 pub mod thread {
     use bindings;
     use libc;
