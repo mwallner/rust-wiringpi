@@ -1,4 +1,3 @@
-#![cfg_attr(feature="nightly", feature(duration))]
 #![doc(html_root_url = "http://ogeon.github.io/docs/rust-wiringpi/master/")]
 
 extern crate libc;
@@ -56,7 +55,6 @@ mod bindings;
 
 pub mod time {
     use bindings;
-    #[cfg(feature="nightly")]
     use std::time::Duration;
 
     ///This causes program execution to pause for at least the provided
@@ -65,30 +63,16 @@ pub mod time {
     ///Due to the multi-tasking nature of Linux it could be longer. Note that
     ///the maximum delay is an unsigned 32-bit integer or approximately 49
     ///days.
-    #[cfg(feature="nightly")]
     pub fn delay(duration: Duration) {
         use libc;
 
-        let duration = (duration.secs() * 1000) as u32 + duration.extra_nanos() / 1_000_000;
+        let duration = (duration.as_secs() * 1000) as u32 + duration.subsec_nanos() / 1_000_000;
         if duration <= 0 {
             return;
         }
 
         unsafe {
             bindings::delay(duration as libc::c_uint);
-        }
-    }
-
-    ///This causes program execution to pause for at least the provided number
-    ///of milliseconds.
-    ///
-    ///Due to the multi-tasking nature of Linux it could be longer. Note that
-    ///the maximum delay is an unsigned 32-bit integer or approximately 49
-    ///days.
-    #[cfg(not(feature="nightly"))]
-    pub fn delay(duration: u32) {
-        unsafe {
-            bindings::delay(duration);
         }
     }
 
