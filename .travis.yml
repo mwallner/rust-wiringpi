@@ -9,7 +9,7 @@ env:
   - RUST=nightly
   - RUST=beta
   - RUST=stable
-  - RUST=1.9.0
+  - RUST=1.12.0
   - RUST=1.8.0
 
 # Install rust
