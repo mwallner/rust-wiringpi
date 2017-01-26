@@ -1,6 +1,6 @@
 [package]
 name = "wiringpi"
-version = "0.1.5"
+version = "0.2.0"
 authors = ["Erik Hedvall <hello@erikhedvall.nu>"]
 build = "build.rs"
 exclude = ["cross*", "scripts/*", "wiringPi/**/*.o", "wiringPi/examples/**", "wiringPi/pins/**", "WiringOP/**/*.o", "WiringOP/examples/**", "WiringOP/pins/**", "examples/*"]
@@ -12,9 +12,6 @@ keywords = ["wiringpi", "wiring", "raspberry", "pi", "bindings"]
 license = "MIT"
 
 [features]
-#Opt in to Rust-nightly features
-nightly = []
-
 #Build patched version or wiringpi for Orange PI
 orangepi = []
 

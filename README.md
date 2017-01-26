@@ -10,15 +10,7 @@ Add the following lines to your `Cargo.io` to use `rust-wiringpi`:
 
 ```
 [dependencies]
-wiringpi = "0.1"
-```
-
-or add these lines to opt in to Rust-nightly features:
-
-```
-[dependencies.wiringpi]
-verson = "0.1"
-features = ["nightly"]
+wiringpi = "0.2"
 ```
 
 ##Example: Flashing Light
@@ -62,6 +54,6 @@ This can be enabled with the `orangepi` feature:
 
 ```
 [dependencies.wiringpi]
-verson = "0.1"
+verson = "0.2"
 features = ["orangepi"]
 ```
