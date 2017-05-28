@@ -1,6 +1,6 @@
 [package]
 name = "wiringpi"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Erik Hedvall <hello@erikhedvall.nu>"]
 build = "build.rs"
 exclude = ["cross*", "scripts/*", "wiringPi/**/*.o", "wiringPi/examples/**", "wiringPi/pins/**", "WiringOP/**/*.o", "WiringOP/examples/**", "WiringOP/pins/**", "examples/*"]
