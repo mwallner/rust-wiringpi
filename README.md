@@ -59,3 +59,23 @@ This can be enabled with the `orangepi` feature:
 verson = "0.2"
 features = ["orangepi"]
 ```
+
+##Development Mode
+
+In development mode, `rust-wiringpi` is compiled as a rust-native library excluding the original WiringPi.
+And binding functions are replaced by dummy functions that output simple logs to stdout.
+With this mode, you can build and debug your project on platforms that does not support WiringPi.
+
+```
+# build
+$ cargo build --features wiringpi/development
+
+# run
+$ cargo run --features wiringpi/development
+
+[wiringpi] `wiringPiSetup` called
+[wiringpi] `pinMode` called with: 0, 1
+[wiringpi] `digitalWrite` called with: 0, 1
+[wiringpi] `digitalWrite` called with: 0, 0
+...
+```
