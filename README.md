@@ -1,4 +1,4 @@
-#WiringPi Bindings for Rust
+# WiringPi Bindings for Rust
 
 An API wrapper for [WiringPi](http://wiringpi.com/) to make it accessible
 using Rust. It implements the most important functions and provides a bit of
@@ -13,7 +13,7 @@ Add the following lines to your `Cargo.io` to use `rust-wiringpi`:
 wiringpi = "0.2"
 ```
 
-##Example: Flashing Light
+## Example: Flashing Light
 
 ```Rust
 extern crate wiringpi;
@@ -42,14 +42,14 @@ fn main() {
 }
 ```
 
-##Cross Compiling Using Cargo
+## Cross Compiling Using Cargo
 
 This project can be cross compiled using Cargo.
 [Follow these instructions](https://github.com/Ogeon/rust-on-raspberry-pi)
 And use `./cross64 build` or `./cross32 build`, depending on your system,
 to check if everything builds as expected.
 
-##Orange Pi support
+## Orange Pi support
 
 `rust-wiringpi` can also wrap the WiringOP library for the Orange Pi SBC boards.
 This can be enabled with the `orangepi` feature:
@@ -60,7 +60,7 @@ verson = "0.2"
 features = ["orangepi"]
 ```
 
-##Development Mode
+## Development Mode
 
 In development mode, `rust-wiringpi` is compiled as a rust-native library excluding the original WiringPi.
 And binding functions are replaced by dummy functions that output simple logs to stdout.
