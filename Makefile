@@ -1,14 +1,17 @@
 unexport CFLAGS
+
+_CC := $(if $(CC),$(CC),$(arm-linux-gnueabihf-gcc))
+
 wiringpi:
 	@echo >&2 $(CFLAGS)
 	$(MAKE) -C wiringPi/wiringPi clean
-	$(MAKE) -C wiringPi/wiringPi static CC=arm-linux-gnueabihf-gcc DEBUG=-O2
+	$(MAKE) -C wiringPi/wiringPi static CC=$(_CC) DEBUG=-O2
 	rm -f $(OUT_DIR)/libwiringpi.a
 	cp wiringPi/wiringPi/libwiringPi.a $(OUT_DIR)/libwiringpi.a
 wiringop:
 	@echo >&2 $(CFLAGS)
 	$(MAKE) -C WiringOP/wiringPi clean
-	$(MAKE) -C WiringOP/wiringPi static CC=arm-linux-gnueabihf-gcc DEBUG=-O2
+	$(MAKE) -C WiringOP/wiringPi static CC=$(_CC) DEBUG=-O2
 	rm -f $(OUT_DIR)/libwiringpi.a
 	cp WiringOP/wiringPi/libwiringPi.a $(OUT_DIR)/libwiringpi.a
 
