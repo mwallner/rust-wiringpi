@@ -61,8 +61,6 @@ impl ::std::default::Default for wiringPiNodeStruct {
     fn default() -> Self { unsafe { ::std::mem::zeroed() } }
 }
 
-use std::fmt::Write;
-
 macro_rules! binding_functions {
     ( $( pub fn $name:ident ( $( $arg_name:ident: $arg_type:ty ),* ) -> $return_type:ty ; $return_value:expr ; )* ) => {
         #[cfg(not(feature = "development"))]
@@ -75,21 +73,13 @@ macro_rules! binding_functions {
 
         $(
             #[cfg(feature = "development")]
-            pub fn $name($($arg_name: $arg_type),*) -> $return_type {
-                let mut args = String::new();
-
-                $(
-                    if args.is_empty() {
-                        write!(&mut args, "{:?}", $arg_name);
-                    } else {
-                        write!(&mut args, ", {:?}", $arg_name);
-                    }
-                )*
+            pub unsafe fn $name($($arg_name: $arg_type),*) -> $return_type {
+                let args: Vec<String> = vec![$(format!("{:?}", $arg_name)),*];
 
                 if args.is_empty() {
                     println!("[wiringpi] `{}` called", stringify!($name));
                 } else {
-                    println!("[wiringpi] `{}` called with: {}", stringify!($name), args);
+                    println!("[wiringpi] `{}` called with: {}", stringify!($name), args.join(", "));
                 }
 
                 $return_value

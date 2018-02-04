@@ -16,5 +16,7 @@ license = "MIT"
 orangepi = []
 development = []
 
+strict = []
+
 [dependencies]
 libc = "0.2"

@@ -27,11 +27,11 @@ install:
   - chmod +x ~/pi-tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin/gcc-sysroot
 
 script:
-  - ./cross64 "build -v"
-  - ./cross64 "build -v --features orangepi"
-  - ./cross64 "build -v --example flashing_lights"
-  - ./cross64 "build -v --features orangepi --example flashing_lights"
-  - ./cross64 "doc -v"
+  - ./cross64 build -v --features strict
+  - ./cross64 build -v --features "orangepi strict"
+  - ./cross64 build -v --example flashing_lights
+  - ./cross64 build -v --features orangepi --example flashing_lights
+  - ./cross64 doc -v
 
   # development mode
   - cargo build -v --features development
