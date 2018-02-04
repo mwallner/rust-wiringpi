@@ -1,5 +1,7 @@
 #![doc(html_root_url = "http://ogeon.github.io/docs/rust-wiringpi/master/")]
 
+#![cfg_attr(feature = "strict", deny(warnings))]
+
 extern crate libc;
 
 use std::marker::PhantomData;
