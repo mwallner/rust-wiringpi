@@ -7,11 +7,21 @@ const TARGET: &'static str = "wiringpi";
 const TARGET: &'static str = "wiringop";
 
 fn main() {
-    if cfg!(feature = "development") { return; }
+    if cfg!(feature = "development") {
+        return;
+    }
+    if let Ok(target) = env::var("TARGET") {
+        if !target.starts_with("arm-") {
+            return;
+        }
+    }
 
     let out_dir = env::var("OUT_DIR").unwrap();
     match Command::new("make").arg("-e").arg(TARGET).status() {
-        Ok(status) if !status.success() => panic!("failed to build wiringPi C library (exit code {:?})", status.code()),
+        Ok(status) if !status.success() => panic!(
+            "failed to build wiringPi C library (exit code {:?})",
+            status.code()
+        ),
         Err(e) => panic!("failed to build wiringPi C library: {}", e),
         _ => {}
     }

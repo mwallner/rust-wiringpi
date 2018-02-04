@@ -30,10 +30,11 @@ script:
   - ./cross64 build -v --features "orangepi strict"
   - ./cross64 build -v --example flashing_lights
   - ./cross64 build -v --features orangepi --example flashing_lights
-  - ./cross64 doc -v
 
   # development mode
   - cargo build -v --features development
   - cargo build -v --features development --example flashing_lights
+
+  - cargo doc -v
 
 after_success: curl https://raw.githubusercontent.com/ogeon/travis-doc-upload/master/travis-doc-upload.sh | sh
