@@ -4,14 +4,18 @@ An API wrapper for [WiringPi](http://wiringpi.com/) to make it accessible
 using Rust. It implements the most important functions and provides a bit of
 type system convenience.
 
-[Online documentation](http://ogeon.github.io/docs/rust-wiringpi/master/wiringpi/index.html)
-
 Add the following lines to your `Cargo.io` to use `rust-wiringpi`:
 
-```
+```toml
 [dependencies]
 wiringpi = "0.2"
 ```
+
+## Online Documentation
+
+[Released](https://docs.rs/crate/wiringpi/0.2.2)
+
+[Master branch](http://ogeon.github.io/docs/rust-wiringpi/master/wiringpi/index.html)
 
 ## Example: Flashing Light
 
@@ -44,6 +48,8 @@ fn main() {
 
 ## Cross Compiling Using Cargo
 
+*The following instructions are currently outdated, so don't follow them. See other guides or [this comment](https://github.com/Ogeon/rust-on-raspberry-pi/issues/30#issuecomment-275848072) for now.*
+
 This project can be cross compiled using Cargo.
 [Follow these instructions](https://github.com/Ogeon/rust-on-raspberry-pi)
 And use `./cross64 build` or `./cross32 build`, depending on your system,
@@ -54,7 +60,7 @@ to check if everything builds as expected.
 `rust-wiringpi` can also wrap the WiringOP library for the Orange Pi SBC boards.
 This can be enabled with the `orangepi` feature:
 
-```
+```toml
 [dependencies.wiringpi]
 verson = "0.2"
 features = ["orangepi"]
@@ -66,7 +72,7 @@ In development mode, `rust-wiringpi` is compiled as a rust-native library exclud
 And binding functions are replaced by dummy functions that output simple logs to stdout.
 With this mode, you can build and debug your project on platforms that does not support WiringPi.
 
-```
+```shell
 # build
 $ cargo build --features wiringpi/development
 
