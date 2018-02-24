@@ -10,13 +10,17 @@ fn main() {
     if cfg!(feature = "development") {
         return;
     }
-    if let Ok(target) = env::var("TARGET") {
-        if !target.starts_with("arm-") {
-            return;
-        }
-    }
 
     let out_dir = env::var("OUT_DIR").unwrap();
+
+    let target = env::var("TARGET").unwrap();
+    match target.as_str() {
+        "armv7-unknown-linux-gnueabihf" => {
+            env::set_var("CC", "arm-linux-gnueabihf-gcc");
+        },
+        _ => {}
+    }
+
     match Command::new("make").arg("-e").arg(TARGET).status() {
         Ok(status) if !status.success() => panic!(
             "failed to build wiringPi C library (exit code {:?})",
@@ -25,5 +29,7 @@ fn main() {
         Err(e) => panic!("failed to build wiringPi C library: {}", e),
         _ => {}
     }
-    println!("cargo:rustc-flags=-L native={} -l static=wiringpi", out_dir);
+
+    println!("cargo:rustc-link-lib-static=wiringpi");
+    println!("cargo:rustc-link-search={}", out_dir);
 }
