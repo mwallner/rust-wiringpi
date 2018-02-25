@@ -9,7 +9,6 @@ env:
   - RUST=nightly
   - RUST=beta
   - RUST=stable
-  - RUST=1.12.0
 
 # Install rust
 install:
