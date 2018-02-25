@@ -1,8 +1,6 @@
 extern crate cc;
 extern crate glob;
 
-use std::env;
-
 #[cfg(not(feature = "orangepi"))]
 const TARGET: &'static str = "wiringPi";
 #[cfg(feature = "orangepi")]
