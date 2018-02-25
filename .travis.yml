@@ -18,18 +18,25 @@ install:
   - rustup toolchain install $RUST
   - rustup default $RUST
   - rustup target add arm-unknown-linux-gnueabihf
+  - rustup target add armv7-unknown-linux-gnueabihf
   - rustc -V
   - cargo -V
   - cp scripts/config ~/.cargo/config
   - git clone https://github.com/raspberrypi/tools.git ~/pi-tools
   - cp scripts/gcc-sysroot ~/pi-tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin
   - chmod +x ~/pi-tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin/gcc-sysroot
+  - export PATH="$HOME/pi-tools/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin:$PATH"
 
 script:
-  - ./cross64 build -v --features strict
-  - ./cross64 build -v --features "orangepi strict"
-  - ./cross64 build -v --example flashing_lights
-  - ./cross64 build -v --features orangepi --example flashing_lights
+  - cargo build --target=arm-unknown-linux-gnueabihf -v --features strict
+  - cargo build --target=arm-unknown-linux-gnueabihf -v --features "orangepi strict"
+  - cargo build --target=arm-unknown-linux-gnueabihf -v --example flashing_lights
+  - cargo build --target=arm-unknown-linux-gnueabihf -v --features orangepi --example flashing_lights
+
+  - cargo build --target=armv7-unknown-linux-gnueabihf -v --features strict
+  - cargo build --target=armv7-unknown-linux-gnueabihf -v --features "orangepi strict"
+  - cargo build --target=armv7-unknown-linux-gnueabihf -v --example flashing_lights
+  - cargo build --target=armv7-unknown-linux-gnueabihf -v --features orangepi --example flashing_lights
 
   # development mode
   - cargo build -v --features development
