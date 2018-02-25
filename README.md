@@ -48,12 +48,11 @@ fn main() {
 
 ## Cross Compiling Using Cargo
 
-*The following instructions are currently outdated, so don't follow them. See other guides or [this comment](https://github.com/Ogeon/rust-on-raspberry-pi/issues/30#issuecomment-275848072) for now.*
+Follow this [guide](https://hackernoon.com/compiling-rust-for-the-raspberry-pi-49fdcd7df658).
 
-This project can be cross compiled using Cargo.
-[Follow these instructions](https://github.com/Ogeon/rust-on-raspberry-pi)
-And use `./cross64 build` or `./cross32 build`, depending on your system,
-to check if everything builds as expected.
+```
+cargo build --target=armv7-unknown-linux-gnueabihf
+```
 
 ## Orange Pi support
 
