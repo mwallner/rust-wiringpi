@@ -51,7 +51,8 @@ fn main() {
 Follow this [guide](https://hackernoon.com/compiling-rust-for-the-raspberry-pi-49fdcd7df658).
 
 ```
-cargo build --target=armv7-unknown-linux-gnueabihf
+cargo build --target=arm-unknown-linux-gnueabihf   # Older models
+cargo build --target=armv7-unknown-linux-gnueabihf # Newer models
 ```
 
 ## Orange Pi support
