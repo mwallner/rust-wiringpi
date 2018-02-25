@@ -1,6 +1,8 @@
 extern crate cc;
 extern crate glob;
 
+use std::env;
+
 #[cfg(not(feature = "orangepi"))]
 const TARGET: &'static str = "wiringPi";
 #[cfg(feature = "orangepi")]
@@ -8,6 +10,13 @@ const TARGET: &'static str = "WiringOP";
 
 fn main() {
     if cfg!(feature = "development") {
+        return;
+    }
+
+    // only build wiringpi/wiringop for arm/armv7 platforms
+
+    let target = std::env::var("TARGET").unwrap();
+    if !(target.starts_with("arm-") || target.starts_with("armv7-")) {
         return;
     }
 
