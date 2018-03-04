@@ -13,7 +13,7 @@ wiringpi = "0.2"
 
 ## Online Documentation
 
-[Released](https://docs.rs/crate/wiringpi/0.2.2)
+[Released](https://docs.rs/wiringpi/0.2.3/wiringpi/)
 
 [Master branch](http://ogeon.github.io/docs/rust-wiringpi/master/wiringpi/index.html)
 
