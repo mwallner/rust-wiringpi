@@ -1,11 +1,11 @@
 [package]
 name = "wiringpi"
-version = "0.2.3"
+version = "0.2.4"
 authors = ["Erik Hedvall <hello@erikhedvall.nu>"]
 build = "build.rs"
 exclude = ["cross*", "scripts/*", "wiringPi/**/*.o", "wiringPi/examples/**", "wiringPi/pins/**", "WiringOP/**/*.o", "WiringOP/examples/**", "WiringOP/pins/**", "examples/*", ".travis.yml"]
 description = "An API wrapper for WiringPi, implementing the most important functions and provides a bit of type system convenience. See README.md for Raspberry Pi build instructions."
-documentation = "https://docs.rs/wiringpi/0.2.3/wiringpi/"
+documentation = "https://docs.rs/wiringpi/0.2.4/wiringpi/"
 repository = "https://github.com/Ogeon/rust-wiringpi"
 readme = "README.md"
 keywords = ["wiringpi", "wiring", "raspberry", "pi", "bindings"]
