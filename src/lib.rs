@@ -138,6 +138,15 @@ pub mod pin {
         High
     }
 
+    #[derive(Debug, Clone, Copy)]
+    pub enum Edge {
+        ///No setup is performed, it is assumed the trigger has already been set up previosuly
+        Setup = 0,
+        Falling = 1,
+        Rising = 2,
+        Both = 3
+    }
+
     #[derive(Clone, Copy)]
     pub enum Pull {
         Off = 0,
@@ -190,6 +199,12 @@ pub mod pin {
         pub fn analog_read(&self) -> u16 {
             unsafe {
                 bindings::analogRead(self.number()) as u16
+            }
+        }
+
+        pub fn register_isr(&self, edge: Edge, f: Option<extern "C" fn()>) {
+            unsafe {
+                bindings::wiringPiISR(self.number(), edge as i32, f);
             }
         }
     }
