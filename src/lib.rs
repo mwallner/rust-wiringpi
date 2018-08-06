@@ -132,20 +132,20 @@ pub mod pin {
 
     pub trait RequiresRoot: Pin {}
 
-    #[derive(Clone, Copy, PartialEq, Eq)]
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
     pub enum Value {
         Low = 0,
         High
     }
 
-    #[derive(Clone, Copy)]
+    #[derive(Debug, Clone, Copy)]
     pub enum Pull {
         Off = 0,
         Down,
         Up
     }
 
-    #[derive(Clone, Copy)]
+    #[derive(Debug, Clone, Copy)]
     pub enum PwmMode {
         MarkSpace = 0,
         Balanced
