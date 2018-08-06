@@ -72,6 +72,9 @@ In development mode, `rust-wiringpi` is compiled as a rust-native library exclud
 And binding functions are replaced by dummy functions that output simple logs to stdout.
 With this mode, you can build and debug your project on platforms that does not support WiringPi.
 
+Development mode will be turned on automatically on non-arm targets, but can be turned on manually 
+on arm targets as well
+
 ```shell
 # build
 $ cargo build --features wiringpi/development
