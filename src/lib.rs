@@ -202,6 +202,44 @@ pub mod pin {
             }
         }
 
+        /// This will register an "Interrupt" to be called when the pin changes state
+        /// Note the quotes around Interrupt, because the current implementation in the C
+        /// library seems to be a dedicated thread that polls the gpio device driver,
+        /// and this callback is called from that thread synchronously, so it's not something that
+        /// you would call a real interrupt in an embedded environement.
+        ///
+        /// The callback function does not need to be reentrant.
+        ///
+        /// The callback must be an actual function (not a closure!), and must be using
+        /// the extern "C" modifier so that it can be passed to the wiringpi library,
+        /// and called from C code.
+        ///
+        /// Unfortunately the C implementation does not allow userdata to be passed around,
+        /// so the callback must be able to determine what caused the interrupt just by the
+        /// function that was invoked.
+        ///
+        /// See https://github.com/Ogeon/rust-wiringpi/pull/28 for
+        /// ideas on how to work around these limitations if you find them too constraining.
+        ///
+        /// ```
+        /// use wiringpi;
+        ///
+        /// extern "C" fn change_state() {
+        ///   println!("Look ma, I'm being called from an another thread");
+        /// }
+        ///
+        /// fn main() {
+        ///    let pi = wiringpi::setup();
+        ///    let pin = pi.output_pin(0);
+        ///
+        ///    pin.register_isr(Edge::Falling, Some(change_state));
+        ///
+        ///    thread::sleep(60000);
+        /// }
+        ///
+        /// ```
+        ///
+        ///
         pub fn register_isr(&self, edge: Edge, f: Option<extern "C" fn()>) {
             unsafe {
                 bindings::wiringPiISR(self.number(), edge as i32, f);
