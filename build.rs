@@ -15,6 +15,7 @@ fn main() {
 
     let target = std::env::var("TARGET").unwrap();
     if !(target.starts_with("arm-") || target.starts_with("armv7-")) {
+        println!("cargo:rustc-cfg=feature=\"development\"");
         return;
     }
 
