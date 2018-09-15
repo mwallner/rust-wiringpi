@@ -62,7 +62,7 @@ This can be enabled with the `orangepi` feature:
 
 ```toml
 [dependencies.wiringpi]
-verson = "0.2"
+version = "0.2"
 features = ["orangepi"]
 ```
 
