@@ -138,6 +138,17 @@ pub mod pin {
         High
     }
 
+    impl std::ops::Not for Value {
+        type Output = Value;
+
+        fn not(self) -> Self::Output {
+            match self {
+                Value::High => Value::Low,
+                Value::Low => Value::High
+            }
+        }
+    }
+
     #[derive(Debug, Clone, Copy)]
     pub enum Edge {
         ///No setup is performed, it is assumed the trigger has already been set up previosuly
