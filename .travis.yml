@@ -42,5 +42,3 @@ script:
   - cargo build -v --features development --example flashing_lights
 
   - cargo doc -v
-
-after_success: curl https://raw.githubusercontent.com/ogeon/travis-doc-upload/master/travis-doc-upload.sh | sh
