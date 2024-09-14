@@ -14,7 +14,10 @@ fn main() {
     // only build wiringpi/wiringop for arm/armv7 platforms
 
     let target = std::env::var("TARGET").unwrap();
-    if !(target.starts_with("arm-") || target.starts_with("armv7-")) {
+    if !(target.starts_with("arm-")
+        || target.starts_with("armv7-")
+        || target.starts_with("aarch64"))
+    {
         println!("cargo:rustc-cfg=feature=\"development\"");
         return;
     }
