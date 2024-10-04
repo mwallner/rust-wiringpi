@@ -14,19 +14,24 @@ fn main() {
     // only build wiringpi/wiringop for arm/armv7 platforms
 
     let target = std::env::var("TARGET").unwrap();
-    if !(target.starts_with("arm-") || target.starts_with("armv7-")) {
+    if !(target.starts_with("arm-")
+        || target.starts_with("armv7-")
+        || target.starts_with("aarch64"))
+    {
         println!("cargo:rustc-cfg=feature=\"development\"");
         return;
     }
 
-    cc::Build::new()
-        .files(
-            glob::glob(&format!("{}/wiringPi/*.c", TARGET))
-                .unwrap()
-                .filter_map(|x| x.ok()),
-        )
-        .include(format!("{}/", TARGET))
-        .include(format!("{}/wiringPi/", TARGET))
-        .static_flag(true)
-        .compile("wiringpi");
+    let mut cc = cc::Build::new();
+    cc.files(
+        glob::glob(&format!("{}/wiringPi/*.c", TARGET))
+            .unwrap()
+            .filter_map(|x| x.ok()),
+    )
+    .include(format!("{}/", TARGET))
+    .include(format!("{}/wiringPi/", TARGET));
+    if target.starts_with("aarch64") {
+        cc.flag("-mabi=lp64").flag("-O2");
+    }
+    cc.static_flag(true).compile("wiringpi");
 }
