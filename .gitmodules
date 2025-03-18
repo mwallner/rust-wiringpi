@@ -1,6 +1,6 @@
 [submodule "wiringPi"]
 	path = wiringPi
-	url = git@github.com:WiringPi/WiringPi.git
+	url = https://github.com/WiringPi/WiringPi.git
 [submodule "WiringOP"]
 	path = WiringOP
 	url = https://github.com/zhaolei/WiringOP.git
